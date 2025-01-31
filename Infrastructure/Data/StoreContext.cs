@@ -12,6 +12,8 @@ namespace Infrastructure.Data
 
         public required DbSet<Address> Addresses { get; set; }
 
+        public required DbSet<DeliveryMethod> DeliveryMethods { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
