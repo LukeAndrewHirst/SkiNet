@@ -5,8 +5,7 @@ using Stripe;
 
 namespace Infrastructure.Services
 {
-    public class PaymentService(IConfiguration configuration, ICartService cartService, IGenericRepository<Core.Entities.Product> productRepository, 
-    IGenericRepository<DeliveryMethod> deliveryMethodRepository) : IPaymentService
+    public class PaymentService(IConfiguration configuration, ICartService cartService, IUnitOfWork unitOfWork) : IPaymentService
     {
         public async Task<ShoppingCart?> CreateOrUpdatePaymentIntent(string cartId)
         {
@@ -19,7 +18,7 @@ namespace Infrastructure.Services
 
             if(cart.DeliveryMethodId.HasValue)
             {
-                var deliveryMethod = await deliveryMethodRepository.GetByIdAsync((int)cart.DeliveryMethodId);
+                var deliveryMethod = await unitOfWork.Repository<DeliveryMethod>().GetByIdAsync((int)cart.DeliveryMethodId);
                 if(deliveryMethod == null) return null;
 
                 shippingPrice = deliveryMethod.Price;
@@ -27,7 +26,7 @@ namespace Infrastructure.Services
 
             foreach(var item in cart.Items)
             {
-                var productItem = await productRepository.GetByIdAsync(item.ProductId);
+                var productItem = await unitOfWork.Repository<Core.Entities.Product>().GetByIdAsync(item.ProductId);
                 if(productItem == null) return null;
 
                 if(item.Price != productItem.Price)

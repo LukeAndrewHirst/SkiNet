@@ -1,4 +1,5 @@
 using Core.Entities;
+using Core.Entities.OrderAggregate;
 using Infrastructure.Configurations;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -8,11 +9,15 @@ namespace Infrastructure.Data
     public class StoreContext(DbContextOptions options) : IdentityDbContext<AppUser>(options)
     {
 
-        public required DbSet<Product> Products { get; set; }
+        public DbSet<Product> Products { get; set; }
 
-        public required DbSet<Address> Addresses { get; set; }
+        public DbSet<Address> Addresses { get; set; }
 
-        public required DbSet<DeliveryMethod> DeliveryMethods { get; set; }
+        public DbSet<DeliveryMethod> DeliveryMethods { get; set; }
+
+        public DbSet<Order> Orders { get; set; }
+
+        public DbSet<OrderItem> OrderItems { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)

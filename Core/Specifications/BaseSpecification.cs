@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using System.Reflection.Metadata.Ecma335;
 using Core.Interfaces;
 using Core.Specifications;
 
@@ -32,9 +33,23 @@ namespace Core.Specifications
 
         public bool isPagingEnabled {get; private set; }
 
+        public List<Expression<Func<T, object>>> Includes { get; } = [];
+
+        public List<string> IncludeStrings { get; } = [];
+
         protected void AddOrderBy(Expression<Func<T, object>> orderByExpression)
         {
             OrderBy = orderByExpression;
+        }
+
+        protected void AddInclude(Expression<Func<T, object>> includeExpression)
+        {
+            Includes.Add(includeExpression);
+        }
+
+        protected void AddInclude(string includeString)
+        {
+            IncludeStrings.Add(includeString);
         }
 
         protected void AddOrderByDescending(Expression<Func<T, object>> orderByDescExpression)

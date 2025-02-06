@@ -16,8 +16,6 @@ namespace Core.Interfaces
 
         Task<IReadOnlyList<TResult>> ListAsync<TResult>(ISpecification<T, TResult> spec);
 
-        Task<bool> SaveAllAsync();
-
         Task<int> CountAsync(ISpecification<T> spec);
 
         void Add(T entity);
