@@ -15,9 +15,17 @@
                     @for (order of orders; track order.orderId) {
                         <tr routerLink="/orders/{{order.orderId}}" class="hover:bg-gray-100">
                             <th class="px-6 py-3"># {{order.orderId}}</th>
-                            <td>{{order.orderDate | date: 'medium'}}</td>
+                            <td>{{order.orderDate | date: 'dd MMMM YYYY HH:mm:ss'}}</td>
                             <td>{{order.total | currency}}</td>
-                            <td>{{order.status}}</td>
+                            @if (order.status === 'PaymentReceved') {
+                                <td class="text-green-700">Payment Received</td>
+                            }
+                            @if(order.status === 'PaymentMismatch') {
+                                <td class="text-red-700">Payment Mismatch</td>
+                            }
+                            @if(order.status === 'Pending') {
+                                <td class="text-orange-700">Order Pending</td>
+                            }
                         </tr>
                     }
                 </tbody>

@@ -27,11 +27,23 @@
                     </dl>
                     <dl>
                         <dt class="font-medium">Order Date</dt>
-                        <dt class="mt-1 font-light">{{order.orderDate | date}}</dt>
+                        <dt class="mt-1 font-light">{{order.orderDate | date: 'dd MMMM YYYY HH:mm:ss'}}</dt>
                     </dl>
                     <dl>
                         <dt class="font-medium">Order Status</dt>
-                        <dt class="mt-1 font-light">{{order.status}}</dt>
+
+                        @if (order.status === 'PaymentReceved') {
+                            <dt class="mt-1 font-light">Payment Received</dt>
+                        }
+
+                        @if (order.status === 'PaymentMismatch') {
+                            <dt class="mt-1 font-light">Payment Mismatch</dt>
+                        }
+
+                        @if (order.status === 'Pending') {
+                            <dt class="mt-1 font-light">Order Pending</dt>
+                        }
+                        
                     </dl>
                 </div>
             </div>
