@@ -6,7 +6,6 @@ using Core.Interfaces;
 using Core.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 
 namespace API.Controllers
 {

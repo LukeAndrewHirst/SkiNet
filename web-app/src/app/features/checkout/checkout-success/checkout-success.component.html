@@ -1,27 +1,42 @@
-<section class="bg-white py-16">
+<section class="bg-white py-16" *ngIf="signalrService.orderSignal() as order">
     <div class="mx-auto max-w-2xl px-4">
         <h2 class="font-semibold text-2xl mb-2">Thank you for shopping with us!</h2>
         <p class="text-gra-500 mb-8">Your order will be is being prepared</p>
         <div class="space-y-2 rounded=lg border border-gray-100 bg-gray-50 p-6 mb-7">
             <dl class="flex items-center justify-between gap-4">
-                <dt class="font-normal text-gray-500">Date will go here</dt>
-                <dd class="font-medium text-gray-900 text-end">DD MMMM YYYY</dd>
+                <dt class="font-normal text-gray-500">Order Date</dt>
+                <dd class="font-medium text-gray-900 text-end">{{order.orderDate | date: 'medium'}}</dd>
             </dl>
             <dl class="flex items-center justify-between gap-4">
                 <dt class="font-normal text-gray-500">Payment Method</dt>
-                <dd class="font-medium text-gray-900 text-end">Type Here</dd>
+                <dd class="font-medium text-gray-900 text-end">{{order.paymentSummary | card}}</dd>
             </dl>
             <dl class="flex items-center justify-between gap-4">
                 <dt class="font-normal text-gray-500">Address</dt>
-                <dd class="font-medium text-gray-900 text-end">Address here</dd>
+                <dd class="font-medium text-gray-900 text-end">{{order.shippingAddress | address}}</dd>
             </dl>
             <dl class="flex items-center justify-between gap-4">
-                <dt class="font-normal text-gray-500">Amoun</dt>
-                <dd class="font-medium text-gray-900 text-end">Amount goes here</dd>
+                <dt class="font-normal text-gray-500">Amount</dt>
+                <dd class="font-medium text-gray-900 text-end">{{order.total | currency}}</dd>
             </dl>
         </div>
         <div class="flex items-center space-x-4">
-            <button routerLink="/orders/111" mat-flat-button>View Your Order</button>
+            <button routerLink="/orders/{{order.orderId}}" mat-flat-button>View Your Order</button>
+            <button routerLink="/shop" mat-stroked-button>Continue Shopping</button>
+        </div>
+    </div>
+</section>
+
+<section class="bg-white py-16" *ngIf="!signalrService.orderSignal()">
+    <div class="mx-auto max-w-2xl px-4">
+        <h2 class="font-semibold text-2xl mb-2">Order processing...</h2>
+        <div class="space-y-2 rounded=lg border border-gray-100 bg-gray-50 p-6 mb-7">
+            <div class="flex flex-col justify-center items-center">
+                <mat-spinner diameter="30"><p class="text-lg">Loging order...</p></mat-spinner>
+                <span>Your payment has been received, your order is being created</span>
+            </div>
+        </div>
+        <div class="flex items-center space-x-4">
             <button routerLink="/shop" mat-stroked-button>Continue Shopping</button>
         </div>
     </div>
