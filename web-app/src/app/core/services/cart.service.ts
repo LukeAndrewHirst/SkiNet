@@ -1,7 +1,7 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { Cart, CartItem } from '../../shared/models/cart';
+import { Cart, CartItem, Coupon } from '../../shared/models/cart';
 import { Product } from '../../shared/models/product';
 import { map } from 'rxjs';
 import { DeliveryMethod } from '../../shared/models/deliveryMethod';
@@ -10,26 +10,46 @@ import { DeliveryMethod } from '../../shared/models/deliveryMethod';
   providedIn: 'root'
 })
 export class CartService {
-  private http = inject(HttpClient);
-  
   baseUrl = environment.apiUrl;
+
+  private http = inject(HttpClient);
+  //private location = inject(Location);
+  
   cart = signal<Cart | null>(null);
 
   itemCount = computed(() => {
     return this.cart()?.items.reduce((sum, item) => sum + item.quantity, 0)
   });
+  
   selectedDelivery = signal<DeliveryMethod | null>(null);
+
   totals = computed(() => {
     const cart = this.cart();
     const delivery = this.selectedDelivery();
+
     if (!cart) return null;
 
     const subtotal = cart.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
     const deliveryFee = delivery ? delivery.price : 0;
-    const discount = 0;
+    
+    let discountValue = 0;
+
+    if (cart.coupon) {
+      if (cart.coupon.amountOff) {
+        discountValue = cart.coupon.amountOff;
+      } else if (cart.coupon.percentOff) {
+        discountValue = subtotal * (cart.coupon.percentOff / 100);
+      }
+    }
+
+    const shipping = delivery ? delivery.price : 0;
+    const total = subtotal + shipping - discountValue
 
     return {
-      subtotal, deliveryFee, discount, total: subtotal + deliveryFee - discount
+      subtotal, 
+      deliveryFee, 
+      discountValue, 
+      total
     }
    });
 
@@ -101,6 +121,10 @@ export class CartService {
     }
 
     return items;
+  }
+
+  applyDiscount(code: string) {
+    return this.http.get<Coupon>(this.baseUrl + 'coupons/' + code);
   }
 
   private mapProductTocartItem(item: Product): CartItem {

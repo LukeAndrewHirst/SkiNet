@@ -5,6 +5,7 @@ namespace API.DTOs
     public class OrderDto
     {
         public int OrderId { get; set; }
+
         public DateTime OrderDate { get; set; }
 
         public required string Buyeremail { get; set; }
@@ -20,6 +21,8 @@ namespace API.DTOs
         public required List<OrderItemDto> OrderItems { get; set; }
         
         public decimal SubTotal { get; set; }
+
+        public decimal Discount { get; set; }
 
         public required string Status { get; set; }
 

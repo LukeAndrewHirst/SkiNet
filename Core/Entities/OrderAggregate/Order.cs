@@ -4,9 +4,11 @@ namespace Core.Entities.OrderAggregate
 {
     public class Order : BaseEntity
     {
+        [Column("Order_Date")]
         public DateTime OrderDate { get; set; } = DateTime.UtcNow;
 
-        public required string Buyeremail { get; set; }
+        [Column("Buyer_Email")]
+        public required string BuyerEmail { get; set; }
 
         public ShippingAddress ShippingAddress { get; set; } = null!;
 
@@ -16,8 +18,10 @@ namespace Core.Entities.OrderAggregate
 
         public List<OrderItem> OrderItems { get; set; } = [];
         
-        [Column("Product_Id")]
+        [Column("Sub_Total")]
         public decimal SubTotal { get; set; }
+
+        public decimal Discount { get; set; }
 
         public OrderStatus Status { get; set; } = OrderStatus.Pending;
 
@@ -26,7 +30,7 @@ namespace Core.Entities.OrderAggregate
 
         public decimal GetTotal()
         {
-            return SubTotal + DeliveryMethod.Price;
+            return SubTotal - Discount + DeliveryMethod.Price;
         }
     }
 }

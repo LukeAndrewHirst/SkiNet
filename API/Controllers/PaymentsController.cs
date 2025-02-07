@@ -70,7 +70,9 @@ namespace API.Controllers
                 var spec = new OrderSpecification(intent.Id, true);
                 var order = await unitOfWork.Repository<Order>().GetEntityWithSpec(spec) ?? throw new Exception("Order not found");
 
-                if((long) order.GetTotal() * 100 != intent.Amount)
+                var orderTotalCents = (long)Math.Round(order.GetTotal() * 100, MidpointRounding.AwayFromZero);
+
+                if(orderTotalCents != intent.Amount)
                 {
                     order.Status = OrderStatus.PaymentMismatch;
                 }
@@ -80,7 +82,7 @@ namespace API.Controllers
                 }
                 await unitOfWork.Complete();
 
-                var ConnectionId = NotificationHub.GetConnectionIdByEmail(order.Buyeremail);
+                var ConnectionId = NotificationHub.GetConnectionIdByEmail(order.BuyerEmail);
 
                 if(!string.IsNullOrEmpty(ConnectionId))
                 {

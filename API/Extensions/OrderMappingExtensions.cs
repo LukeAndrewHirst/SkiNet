@@ -10,7 +10,7 @@ namespace API.Extensions
             return new OrderDto
             {
                 OrderId = order.Id,
-                Buyeremail = order.Buyeremail,
+                Buyeremail = order.BuyerEmail,
                 OrderDate = order.OrderDate,
                 ShippingAddress = order.ShippingAddress,
                 PaymentSummary = order.PaymentSummary,
@@ -18,6 +18,7 @@ namespace API.Extensions
                 DeliveryFee = order.DeliveryMethod.Price,
                 OrderItems = order.OrderItems.Select(oi => oi.ToDto()).ToList(),
                 SubTotal = order.SubTotal,
+                Discount = order.Discount,
                 Total = order.GetTotal(),
                 Status = order.Status.ToString(),
                 PaymentIntentId = order.PaymentIntentId,

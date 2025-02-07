@@ -54,9 +54,10 @@ namespace API.Controllers
                 DeliveryMethod = deliveryMethod,
                 ShippingAddress = createOrderDto.ShippingAddress,
                 SubTotal = items.Sum(i => i.Price * i.Quantity),
+                Discount = createOrderDto.Discount,
                 PaymentSummary = createOrderDto.PaymentSummary,
                 PaymentIntentId = cart.PaymentIntentId,
-                Buyeremail = email
+                BuyerEmail = email
             };
 
             unitOfWork.Repository<Order>().Add(order);

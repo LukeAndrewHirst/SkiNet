@@ -1,13 +1,14 @@
 export interface Order {
     orderId: number,
     orderDate: string,
-    buyeremail: string,
+    buyerEmail: string,
     shippingAddress: ShippingAddress,
     deliveryMethod: string,
     deliveryFee: number,
     paymentSummary: PaymentSummary,
     orderItems: OrderItem[],
     subTotal: number,
+    discount?: number,
     status: string,
     total: number,
     paymentIntentId: string,
@@ -42,5 +43,6 @@ export interface Order {
     cartId: string,
     deliveryMethodId: number,
     shippingAddress: ShippingAddress,
-    paymentSummary: PaymentSummary
+    paymentSummary: PaymentSummary,
+    discount?: number
   }
