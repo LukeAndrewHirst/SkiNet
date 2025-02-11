@@ -1,8 +1,9 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using Core.Interfaces;
 
 namespace Core.Entities.OrderAggregate
 {
-    public class Order : BaseEntity
+    public class Order : BaseEntity, IDtoConvertable
     {
         [Column("Order_Date")]
         public DateTime OrderDate { get; set; } = DateTime.UtcNow;

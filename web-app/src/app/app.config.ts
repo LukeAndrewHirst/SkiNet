@@ -1,4 +1,4 @@
-import { APP_INITIALIZER, ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, inject, provideAppInitializer, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
@@ -10,15 +10,16 @@ import { InitService } from './core/services/init.service';
 import { lastValueFrom } from 'rxjs';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 
-function initializeApp(initService: InitService) {
-  return () => lastValueFrom(initService.init()).finally(() => {
+function initializeApp() {
+  const initService = inject(InitService); 
+  return lastValueFrom(initService.init()).finally(() => {
     const splash = document.getElementById('initial-splash');
-
-    if(splash) {
-      splash.remove();
+    if (splash) {
+      splash.remove(); 
     }
-  })
+  });
 }
+ 
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -26,11 +27,6 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes), 
     provideAnimationsAsync(),
     provideHttpClient(withInterceptors([errorInterceptor, loadingInterceptor, authInterceptor])),
-    {
-      provide: APP_INITIALIZER,
-      useFactory: initializeApp,
-      multi: true,
-      deps: [InitService]
-    }
+    provideAppInitializer(initializeApp)
   ]
 };

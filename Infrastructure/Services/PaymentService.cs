@@ -30,6 +30,21 @@ namespace Infrastructure.Services
             return cart;
         }
 
+        public async Task<string> RefundPayment(string paymentIntentId)
+        {
+            StripeConfiguration.ApiKey = configuration["StripeSettings:SecretKey"];
+
+            var refundOptions = new RefundCreateOptions
+            {
+                PaymentIntent = paymentIntentId
+            };
+
+            var refundService = new RefundService();
+            var result = await refundService.CreateAsync(refundOptions);
+
+            return result.Status;
+        }
+
         private async Task CreateUpdatePaymentIntentAsync(ShoppingCart cart, long total)
         {
             var service = new PaymentIntentService();
