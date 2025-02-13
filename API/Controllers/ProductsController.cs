@@ -1,3 +1,4 @@
+using API.RequestHelpers;
 using Core.Entities;
 using Core.Interfaces;
 using Core.Specifications;
@@ -8,6 +9,7 @@ namespace API.Controllers
 {
     public class ProductsController(IUnitOfWork unitOfWork) : BaseApiController
     {
+        [Cache(10000)]
         [HttpGet]
         public async Task<ActionResult<IReadOnlyList<Product>>> GetProducts([FromQuery]ProductSpecificationParams specificationParams)
         {
@@ -16,6 +18,7 @@ namespace API.Controllers
             return await CreatePagedResult(unitOfWork.Repository<Product>(), spec, specificationParams.PageIndex, specificationParams.PageSize);
         }
 
+        [Cache(10000)]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Product>> GetProduct(int id)
         {
@@ -25,6 +28,7 @@ namespace API.Controllers
             return product;
         }
 
+        [Cache(10000)]
         [HttpGet("brands")]
         public async Task<ActionResult<IReadOnlyList<string>>> GetBrands()
         {
@@ -33,6 +37,7 @@ namespace API.Controllers
             return Ok(await unitOfWork.Repository<Product>().ListAsync(spec));
         }
 
+        [Cache(10000)]
         [HttpGet("types")]
         public async Task<ActionResult<IReadOnlyList<string>>> GetTypes()
         {
@@ -41,6 +46,7 @@ namespace API.Controllers
             return Ok(await unitOfWork.Repository<Product>().ListAsync(spec));
         }
 
+        [InvalidateCache("api/products|")]
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<Product>> AddProduct(Product product)
@@ -51,7 +57,8 @@ namespace API.Controllers
 
             return BadRequest("Unable to create new product");
         }
-
+        
+        [InvalidateCache("api/products|")]
         [Authorize(Roles = "Admin")]
         [HttpPut("{id:int}")]
         public async Task<ActionResult> UpdateProduct(int id, Product product)
@@ -64,7 +71,8 @@ namespace API.Controllers
 
             return BadRequest("Unable to update product");
         }
-
+        
+        [InvalidateCache("api/products|")]
         [Authorize(Roles = "Admin")]
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> DeleteProduct(int id)
