@@ -15,28 +15,30 @@ namespace Infrastructure.Services
         public async Task<AppCoupon?> GetCouponFromPromotionCode(string code)
         {
             var promotionService = new PromotionCodeService();
+            var couponService = new Stripe.CouponService();
 
             var options = new PromotionCodeListOptions
             {
-            Code = code
+                Code = code
             };
 
             var promotionCodes = await promotionService.ListAsync(options);
-
             var promotionCode = promotionCodes.FirstOrDefault();
 
-            if (promotionCode != null && promotionCode.Coupon != null)
+            if (promotionCode is null) return null;
+            if (string.IsNullOrEmpty(promotionCode.Code)) return null;
+
+            var coupon = await couponService.GetAsync(promotionCode.Code);
+            if (coupon == null) return null;
+
+            return new AppCoupon
             {
-                return new AppCoupon
-                {
-                    Name = promotionCode.Coupon.Name,
-                    AmountOff = promotionCode.Coupon.AmountOff,
-                    PercentOff = promotionCode.Coupon.PercentOff,
-                    CouponId = promotionCode.Coupon.Id,
-                    PromotionCode = promotionCode.Code
-                };
-            }
-            return null;
+                Name = coupon.Name,
+                AmountOff = coupon.AmountOff,
+                PercentOff = coupon.PercentOff,
+                CouponId = coupon.Id,
+                PromotionCode = promotionCode.Code
+            };   
         }
     }
 }
